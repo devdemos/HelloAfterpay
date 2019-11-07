@@ -12,3 +12,9 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 630bb47d72e1        afterpay:latest     "flask run --host 0.…"   12 minutes ago      Up 12 minutes       0.0.0.0:80->5000/tcp   awesome_meninsky
 
 ```
+
+```
+curl http://127.0.0.1
+
+Hello Afterpay!
+```
