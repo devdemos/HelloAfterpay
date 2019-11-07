@@ -161,7 +161,6 @@
                                 "sudo yum -y update\n",
                                 "sudo yum -y install puppet\n",
                                 "sudo yum -y install git\n",
-                                "sudo yum -y install gcc openssl-testel bzip2-testel libffi-testel\n",
                                 "sudo amazon-linux-extras install docker -y\n",
                                 "sudo service docker start\n",
                                 "sudo usermod -a -G docker ec2-user\n",
@@ -265,7 +264,7 @@
                         "ToPort" : "80",
                         "CidrIp" : "0.0.0.0/0"
                     }  
-                ]
+                ],
                 "Tags": [
                     {
                         "Key": "Name",
