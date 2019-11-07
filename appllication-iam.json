@@ -1,0 +1,69 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "QSS3BucketName": {
+        "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+        "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+        "Default": "aws-quickstart",
+        "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+        "Type": "String"
+        },
+    "QSS3KeyPrefix": {
+        "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+        "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+        "Default": "quickstart-microsoft-rdgateway/",
+        "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+        "Type": "String"
+    },
+    "ApplicationHostRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+         "Policies": [
+            {
+               "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                     {
+                        "Action": [
+                           "s3:GetObject"
+                        ],
+                        "Resource": {
+                           "Fn::Sub": "arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*"
+                        },
+                        "Effect": "Allow"
+                     }
+                  ]
+               },
+               "PolicyName": "aws-quick-start-s3-policy"
+            }
+         ],
+         "Path": "/",
+         "AssumeRolePolicyDocument": {
+            "Statement": [
+               {
+                  "Action": [
+                     "sts:AssumeRole"
+                  ],
+                  "Principal": {
+                     "Service": [
+                        "ec2.amazonaws.com"
+                     ]
+                  },
+                  "Effect": "Allow"
+               }
+            ],
+            "Version": "2012-10-17"
+         }
+      }
+   },
+   "ApplicationHostProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+         "Roles": [
+            {
+               "Ref": "ApplicationHostRole"
+            }
+         ],
+         "Path": "/"
+      }
+   },
+}
