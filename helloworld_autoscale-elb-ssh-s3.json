@@ -102,7 +102,7 @@
                       "s3:List*",
                       "s3:GetObject"
                     ],
-                    "Resource" : "arn:aws:s3:::devdemos-repos"
+                    "Resource" : "*"
                   }
                 ]
               },
@@ -222,9 +222,10 @@
                                 "sudo amazon-linux-extras install docker -y\n",
                                 "sudo service docker start\n",
                                 "sudo usermod -a -G docker ec2-user\n",
-                                "sudo aws s3 cp s3://devdemos-repos /home/ec2-user --recursive\n",
-                                "sudo chown -R ec2-user:ec2-user afterpay-application/\n",
-                                "cd afterpay-application\n",
+                                "aws s3 cp s3://devdemos-repos /home/ec2-user --recursive\n",
+                                "cd /home/ec2-user/afterpay-application\n",
+                                "pwd\n",
+                                "ls -l\n",
                                 "sudo docker build -t afterpay:latest .\n",
                                 "sudo docker run -d -p 80:5000 afterpay:latest\n"
                             ]
