@@ -150,18 +150,24 @@
                             [
                                 "#!/bin/bash\n",
                                 "sudo yum -y update\n",
+                                "sudo yum -y install ntp\n",
+                                "sudo systemctl enable ntpd\n",
+                                "sudo yum -y install telnet\n",
+                                "sudo yum -y install mtr\n",
+                                "sudo yum -y install tree\n",
+                                "sudo rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm\n",
+                                "sudo yum -y install puppet\n",
                                 "sudo yum -y install git\n",
-                                "sudo yum -y install gcc openssl-devel bzip2-devel libffi-develsudo yum -y install python37\n",
-                                "sudo yum -y install python-setuptools\n",
-                                "sudo yum -y install python-pip\n",
-                                "service httpd start\n",
-                                "chkconfig httpd on\n",
-                                "aws-cfn-bootstrap-latest.tar.gz\n",
-                                "cfn-init -s '",
-                                {
-                                    "Ref": "AWS::StackName"
-                                },
-                                "' -r Ec2Instance -c ascending"
+                                "sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel\n",
+                                "sudo amazon-linux-extras install docker\n",
+                                "sudo service docker start\n",
+                                "sudo usermod -a -G docker ec2-user\n",
+                                "git clone https://github.com/devdemos/HelloAfterpay.git\n",
+                                "cd HelloAfterpay\n",
+                                "git clone https://github.com/AfterpayTouch/recruitment-challenge-1.git\n",
+                                "cd ..\n",
+                                "docker build -t afterpay:latest .\n",
+                                "docker run -d -p 80:5000 afterpay:latest\n"
                             ]
                         ]
                     }
