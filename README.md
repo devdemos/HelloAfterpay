@@ -1,5 +1,11 @@
+# AWS Application Stack
 
+- Setup AWS Commandline user to copy to S3
+- Commit code to github
+- Create Template from Troposphere (Optional) via Travis CI 
+- Push Dockerfile and API to S3 via Travis CI, skip json files
 
+- Create Stack Manually 
 
 ```
 docker run -d -p 80:5000 afterpay:latest
