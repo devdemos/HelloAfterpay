@@ -16,6 +16,4 @@ jobs:
        - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
        - export S3_PATH=$AWS_S3_BUCKET_PATH
     script:
-       #- aws s3 sync . s3://$AWS_S3_BUCKET_PATH --exclude "*.json"
-       - aws s3 cp Dockerfile s3://$AWS_S3_BUCKET_PATH/
-       - aws s3 cp $APPLICATION_FOLDER s3://$AWS_S3_BUCKET_PATH/
+       - aws s3 sync . s3://$AWS_S3_BUCKET_PATH --exclude "*.json"
