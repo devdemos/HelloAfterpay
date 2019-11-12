@@ -234,7 +234,8 @@
                                 "ls -l\n",
                                 "sudo docker build -t afterpay:latest .\n",
                                 "sudo docker run -d -p 80:5000 afterpay:latest\n",
-                                "sudo ./config/config.bash\n"
+                                "sudo chmod +x config/config.bash\n",
+                                "sudo ./config/config.bash\n",
                             ]
                         ]
                     }
