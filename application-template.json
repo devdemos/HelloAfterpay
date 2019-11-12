@@ -220,14 +220,21 @@
                                 "sudo yum -y install git\n",
                                 "sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel\n",
                                 "sudo amazon-linux-extras install docker -y\n",
+                                "sudo amazon-linux-extras install epel -y\n",
+                                "rpm -ivh http://yum.puppetlabs.com/puppet-release-el-7.noarch.rpm\n",
+                                "sudo yum -y install puppet\n",
+                                "export PATH=/opt/puppetlabs/bin:$PATH\n",
+                                "puppet module install puppetlabs-ntp --version 8.1.0\n",
+                                "puppet module install eyp-sysctl --version 0.3.5\n",
                                 "sudo service docker start\n",
                                 "sudo usermod -a -G docker ec2-user\n",
                                 "aws s3 cp s3://devdemos-repos /home/ec2-user --recursive\n",
-                                "cd /home/ec2-user/afterpay-application\n",
+                                "cd /home/ec2-user/HelloAfterpay\n",
                                 "pwd\n",
                                 "ls -l\n",
                                 "sudo docker build -t afterpay:latest .\n",
-                                "sudo docker run -d -p 80:5000 afterpay:latest\n"
+                                "sudo docker run -d -p 80:5000 afterpay:latest\n",
+                                "sudo ./config/config.bash\n"
                             ]
                         ]
                     }
