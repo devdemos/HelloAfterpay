@@ -1,4 +1,4 @@
-# HelloAfterpay Application 
+# API Application Stack
 
 
 | Name       | Value                 | 
@@ -34,7 +34,7 @@ Currently the values used for referencing the S3 buckets of which files are push
 To reference and modify this reference for your corresponding bucket locate the following section of code in `application-template.json` under `userdata`, replacing 
 ```
  "aws s3 cp s3://devdemos-repos /home/ec2-user --recursive\n",
- "cd /home/ec2-user/HelloAfterpay\n",
+ "cd /home/ec2-user/api-application-stack\n",
 ```
 based on : <br>
 ```
@@ -45,7 +45,7 @@ based on : <br>
 and referenced in the `userdata`, eliminating hardcoding and dependencies.
 
 ### Application Delivery
-The `HelloAfterpay` application is delivered via containerisation using Docker. 
+The `api-application-stack` application is delivered via containerisation using Docker. 
 
 By default 2 nodes are created, of which the LaunchConfig pulls the required files from S3 including the `Dockerfile`. <br>
 This file then builds the required image, followed by running the image as a container exposing it on `Port 80`, by default 
@@ -135,12 +135,12 @@ Here you will be presented with the options to select:
 To run the application locally you will need to first build the Docker Image 
 
 ```
-docker build -t afterpay:latest .
+docker build -t api-application:latest .
 ```
 
 Once the Image has been build you can run it, exposing port 80 to map to the image running on port 5000
 ```
-docker run -d -p 80:5000 afterpay:latest
+docker run -d -p 80:5000 api-application:latest
 
 630bb47d72e18891502f82250f23d040d5041d1dead31a215580d4386d15c4cf
 ```
@@ -150,14 +150,14 @@ Verify your container is running
 docker ps
 
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-630bb47d72e1        afterpay:latest     "flask run --host 0.…"   12 minutes ago      Up 12 minutes       0.0.0.0:80->5000/tcp   awesome_meninsky
+630bb47d72e1        api-application:latest     "flask run --host 0.…"   12 minutes ago      Up 12 minutes       0.0.0.0:80->5000/tcp   awesome_meninsky
 
 ```
 Test your application is running on port 80 using either curl or your browser
 ```
 curl http://127.0.0.1
 
-Hello Afterpay!
+Hello Cloud User!
 ```
 
 ## To-Do List / Improvements / Upgrades
