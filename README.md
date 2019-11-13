@@ -1,9 +1,9 @@
 # HelloAfterpay Application 
 
 
-| Name       | Value        | 
-| ---------- | ------------ | 
-| Version    | 1.0.0        |
+| Name       | Value                 | 
+| ---------- | ----------------------| 
+| Version    | 1.0.0                 |
 | Date       | 13th of November 2019 |
 
 ## About 
@@ -11,15 +11,16 @@
 ### Infrastructure
 This repository utilises the Infrastructure as Code Tool of AWS Cloudformation to deploy a small Application Stack.
 The Stack creates the following resources:
-| Name                                 | Description                                                       | 
-| ------------------------------------ | ----------------------------------------------------------------- | 
-| ApplicationAutoscalingGroup          | AWS:AutoScalingGroup used to host EC2 Instances (min of 2)        | 
-| ApplicationLaunchConfig              | AWS::LaunchConfiguration contains config of EC2 Instances used    | 
-| ApplicationS3BucketInstanceProfile   | AWS:InstanceProfile used by Autoscaling Group Nodes to access S3  |
-| ApplicationS3BucketRole              | AWS:IAM::Role used by Autoscaling Group Nodes to access S3        |
-| ApplicationSecuritGroup              | AWS:EC2::SecurityGroup to secure EC2 Instances allowing access on 22 via approved CIDR |
+
+| Name                                 | Description                                                                                    | 
+| ------------------------------------ | ---------------------------------------------------------------------------------------------- | 
+| ApplicationAutoscalingGroup          | AWS:AutoScalingGroup used to host EC2 Instances (min of 2)                                     | 
+| ApplicationLaunchConfig              | AWS::LaunchConfiguration contains config of EC2 Instances used                                 | 
+| ApplicationS3BucketInstanceProfile   | AWS:InstanceProfile used by Autoscaling Group Nodes to access S3                               |
+| ApplicationS3BucketRole              | AWS:IAM::Role used by Autoscaling Group Nodes to access S3                                     |
+| ApplicationSecuritGroup              | AWS:EC2::SecurityGroup to secure EC2 Instances allowing access on 22 via approved CIDR         |
 | LoadBalancer                         | AWS:ElasticLoadBalancing::LoadBalancer used to load balance requests to Autoscaling group nodes|
-| LoadBalancerSecurityGroup            | AWS:EC2::SecurityGroup control access of ELB                      |
+| LoadBalancerSecurityGroup            | AWS:EC2::SecurityGroup control access of ELB                                                   |
 
 These resources are created as part of the `application-template.json` file
 
@@ -54,6 +55,7 @@ the Application runs on `Port 5000`
 ## Configuration Management
 All packages are update to date and all pending security updates are applied against the default OS repositories at time of deployment.
 
+Configuration Management of the Nodes is handled using `Puppet` <br>
 ### Puppet Config
 | Name                           | Location                                                          | 
 | ------------------------------ | ----------------------------------------------------------------- | 
