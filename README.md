@@ -1,5 +1,6 @@
 # API Application Stack
 
+A simple example of Infrastructure as Code using Cloudformation and Configuration Management using Puppet and Bash
 
 | Name       | Value                 | 
 | ---------- | ----------------------| 
