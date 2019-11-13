@@ -1,19 +1,100 @@
-# AWS Application Stack
+# HelloAfterpay Application 
+
+
+| Name       | Value        | 
+| ---------- | ------------ | 
+| Version    | 1            |
+| Date       | 13th of November 2019           |
 
 ## About 
 
-This repository uses Cloudformation to create an Autoscaled EC2 group, LoadBalanced by an Elastic Load Balancer to host the application.
-The application has been containerised, meaing it is a running Docker image built and running locally.
+### Infrastructure
+This repository utilises the Infrastructure as Code Tool of AWS Cloudformation to deploy a small Application Stack.
+The Stack creates the following resources:
+| Name                                 | Description                                                       | 
+| ------------------------------------ | ----------------------------------------------------------------- | 
+| ApplicationAutoscalingGroup          | AWS:AutoScalingGroup used to host EC2 Instances (min of 2)        | 
+| ApplicationLaunchConfig              | AWS::LaunchConfiguration contains config of EC2 Instances used    | 
+| ApplicationS3BucketInstanceProfile   | AWS:InstanceProfile used by Autoscaling Group Nodes to access S3  |
+| ApplicationS3BucketRole              | AWS:IAM::Role used by Autoscaling Group Nodes to access S3        |
+| ApplicationSecuritGroup              | AWS:EC2::SecurityGroup to secure EC2 Instances allowing access on 22 via approved CIDR |
+| LoadBalancer                         | AWS:ElasticLoadBalancing::LoadBalancer used to load balance requests to Autoscaling group nodes|
+| LoadBalancerSecurityGroup            | AWS:EC2::SecurityGroup control access of ELB                      |
+
+These resources are created as part of the `application-template.json` file
+
+**Requirements** <br>
+Manual creation of an S3 bucket in your is required to push and pull the required repository files for 
+configuration and deployment. 
+
+### application-template.json
+Currently the values used for referencing the S3 buckets of which files are pushed to as part of CI/CD are hardcoded into this file  
+***(not good practices, and scheduled to be corrected as noted below)***. <br>
+To reference and modify this reference for your corresponding bucket locate the following section of code in `application-template.json` under `userdata`, replacing 
+```
+ "aws s3 cp s3://devdemos-repos /home/ec2-user --recursive\n",
+ "cd /home/ec2-user/HelloAfterpay\n",
+```
+based on : <br>
+```
+ "aws s3 cp s3://<s3-bucket-name> /home/ec2-user --recursive\n",
+ "cd /home/ec2-user/<s3-application-folder-name>\n",
+```
+**NOTE** The above will be replaced using "Parameters" to eliminate the need for hardcoding, meaning the values will be set at launch
+and referenced in the `userdata`, eliminating hardcoding and dependencies.
+
+### Application Delivery
+The `HelloAfterpay` application is delivered via the use of containerisation, 
+The application has been containerised, meaning it is a running Docker image built and running locally.
 
 By default 2 nodes are created, of which the LaunchConfig pulls the required files from S3, builds and then runs the containerised
 application on port 80
 
+## Configuration Management
+All packages are update to date and all pending security updates are applied against the default OS repositories at time of deployment.
+
+### Puppet Config
+| Name                           | Location                                                          | 
+| ------------------------------ | ----------------------------------------------------------------- | 
+| Puppet Version                 | `6.10.1`                                                          | 
+| Puppet Install Location        | `/opt/puppetlabs/`                                                | 
+| Puppet Executable              | `/opt/puppetlabs/bin/puppet `                                     | 
+| Puppet Manifests               | `/etc/puppetlabs/code/environments/production/manifests `         | 
+| Puppet Modules                 | `/etc/puppetlabs/code/environments/production/modules `           | 
+| site.pp                        | `/etc/puppetlabs/code/environments/production/manifests/site.pp ` | 
+
+<br>
+
+Puppet is used to install and verify the presence of the following packages by running `/etc/puppetlabs/code/environments/production/manifests/site.pp`: <br> 
+- ntp (started at boot), 
+- telnet 
+- mtr 
+- tree
+
+### Puppet Modules/Manifests
+To add a new module run: <br>
+`puppet module install <module-name>` <br>
+`site.pp` is used to define site specific configuration/properties for our host, modify this file to configure modules.
+
+### System Config 
+The current System settings are also enforced using a bash script `config/config.bash` 
+- IPv6 system wide has been disabled.
+- Max "open files" limit across all users/processes, soft & hard, set 65535.
+
+**NOTE**  These setting will be enforced using Puppet in the near future to remove this script.
+
+
 ## Deployment
-To deploy the application stack, you will need to load the `application-template.json` file in Cloudformation.
-Here you will be presented with the options to specify the subnets used by the LoadBalancer and EC2 Instances, the VPC the stack
-will be installed in. The selection allows you to select from your existing subnets, therefore if you need to create new subents, do 
-so before running the stack. 
-Also the ability to set a CIDR range to permit access for ssh access is required, along with the ability to select one your existing ssh-keys.
+To deploy the application stack, you will need to load the `application-template.json` file in Cloudformation. <br>
+Here you will be presented with the options to select:
+- Subnets used by the LoadBalancer (from exisiting subnets)
+- Subnets used by the Autoscaling Group EC2 Instances (from exisiting subnets)
+- VPC (from exisiting VPCs)
+- CIDR range to permit access for ssh access to EC2 Instances
+- SSH-Key to assoicaite with instances (from existing ssh-keys)
+  
+ The selection allows you to select from your existing resources therefore if you need to create new resources(keys,subnets, etc) do so before 
+ attempting to build the stack
 
 ## CI/CD 
 Upon a commit this repository uses Travis CI to push the contents of the repository (excluding json, and hiddien files)
@@ -30,16 +111,8 @@ The following variable is set to advise Travis CI where to copy the contents to:
 e.g. <br>
 - AWS_S3_BUCKET_PATH = application_repository/application_name
 
-
-### application-template.json
-Currently the values used for referencing the S3 buckets of which files are pushed to as part of CI/CD are hardcoded.
-To utilise the script for an alternative application, you will need to modify these. 
-```
- "aws s3 cp s3://devdemos-repos /home/ec2-user --recursive\n",
- "cd /home/ec2-user/afterpay-application\n",
-```
-**NOTE** The above will be replaced using "Parameters" to eliminate the need for hardcoding, meaning the values will be set at launch
-and referenced in the `userdata`, eliminating hardcoding and dependencies.
+**Requirements** <br>
+The creation of AWS IAM console user with access to `List` and `Write` to S3 
 
 ## Run Application Locally
 To run the application locally you will need to first build the Docker Image 
@@ -69,3 +142,10 @@ curl http://127.0.0.1
 
 Hello Afterpay!
 ```
+
+## To-Do List 
+- Remove Hardcoding of S3 Bucket in `Userdata`
+- Set IPv6 disabel via Puppet 
+- Set OpenFiles config via Puppet
+- Move LoadBalancer from Classic to ALB (ie include Target Groups)
+- Build Docker Image as part of Travis CI, and push to DockerHub or ECR then pull image as part of `userdata`

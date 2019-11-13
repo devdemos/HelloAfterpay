@@ -354,5 +354,12 @@
             },
             "Type": "AWS::EC2::SecurityGroup"
         }
-    }
+    },
+    
+    "Outputs" : {
+        "URL" : {
+          "Description" : "URL of the website",
+          "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "LoadBalancer", "DNSName" ]}]]}
+        }
+      }
 }
