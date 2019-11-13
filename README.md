@@ -3,8 +3,8 @@
 
 | Name       | Value        | 
 | ---------- | ------------ | 
-| Version    | 1            |
-| Date       | 13th of November 2019           |
+| Version    | 1.0.0        |
+| Date       | 13th of November 2019 |
 
 ## About 
 
@@ -44,11 +44,12 @@ based on : <br>
 and referenced in the `userdata`, eliminating hardcoding and dependencies.
 
 ### Application Delivery
-The `HelloAfterpay` application is delivered via the use of containerisation, 
-The application has been containerised, meaning it is a running Docker image built and running locally.
+The `HelloAfterpay` application is delivered via containerisation using Docker. 
 
-By default 2 nodes are created, of which the LaunchConfig pulls the required files from S3, builds and then runs the containerised
-application on port 80
+By default 2 nodes are created, of which the LaunchConfig pulls the required files from S3 including the `Dockerfile`. <br>
+This file then builds the required image, followed by running the image as a container exposing it on `Port 80`, by default 
+the Application runs on `Port 5000` 
+
 
 ## Configuration Management
 All packages are update to date and all pending security updates are applied against the default OS repositories at time of deployment.
@@ -83,19 +84,6 @@ The current System settings are also enforced using a bash script `config/config
 
 **NOTE**  These setting will be enforced using Puppet in the near future to remove this script.
 
-
-## Deployment
-To deploy the application stack, you will need to load the `application-template.json` file in Cloudformation. <br>
-Here you will be presented with the options to select:
-- Subnets used by the LoadBalancer (from exisiting subnets)
-- Subnets used by the Autoscaling Group EC2 Instances (from exisiting subnets)
-- VPC (from exisiting VPCs)
-- CIDR range to permit access for ssh access to EC2 Instances
-- SSH-Key to assoicaite with instances (from existing ssh-keys)
-  
- The selection allows you to select from your existing resources therefore if you need to create new resources(keys,subnets, etc) do so before 
- attempting to build the stack
-
 ## CI/CD 
 Upon a commit this repository uses Travis CI to push the contents of the repository (excluding json, and hiddien files)
 to a designated S3 Bucket. 
@@ -112,7 +100,34 @@ e.g. <br>
 - AWS_S3_BUCKET_PATH = application_repository/application_name
 
 **Requirements** <br>
-The creation of AWS IAM console user with access to `List` and `Write` to S3 
+- Creation of AWS IAM console user with access to `List` and `Write` to S3 and credentials
+- Creation of the following variables in Travis CI, `Settings`  
+  - AWS_ACCESS_KEY_ID = "AWS CI/CD User Credentials"
+  - AWS_SECRET_ACCESS_KEY = "AWS CI/CD User Credentials"
+  - AWS_DEFAULT_REGION = "AWS CI/CD User Credentials"
+  - AWS_S3_BUCKET_PATH = "path of S3 Bucket and Application Name e.g. `application_repository/application_name` "
+
+
+## Deployment
+To deploy the application stack, you will need to load the `application-template.json` file in Cloudformation. <br>
+Here you will be presented with the options to select:
+- Subnets used by the LoadBalancer (from exisiting subnets)
+- Subnets used by the Autoscaling Group EC2 Instances (from exisiting subnets)
+- VPC (from exisiting VPCs)
+- CIDR range to permit access for ssh access to EC2 Instances
+- SSH-Key to assoicaite with instances (from existing ssh-keys)
+  
+ The selection allows you to select from your existing resources therefore if you need to create new resources(keys,subnets, etc) do so before 
+ attempting to build the stack
+
+ Give the stack a name and ensure you explicitly acknowledge its capabilities to create IAM resources.
+
+## Access Application 
+ Once the stack deployment has been created view the contents of the `Outputs`  tab to obtain the Website URL (LoadBalancer URL).<br>
+ **NOTE** This does take a few minutes to be live once the instances have launched for the first time<br>
+
+ You can either use `curl` or a `browser` to view the contents of the application. 
+
 
 ## Run Application Locally
 To run the application locally you will need to first build the Docker Image 
@@ -143,7 +158,7 @@ curl http://127.0.0.1
 Hello Afterpay!
 ```
 
-## To-Do List 
+## To-Do List / Improvements / Upgrades
 - Remove Hardcoding of S3 Bucket in `Userdata`
 - Set IPv6 disabel via Puppet 
 - Set OpenFiles config via Puppet
