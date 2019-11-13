@@ -6,5 +6,5 @@ echo "fs.file-max=65535" >>  /etc/sysctl.conf
 sysctl -p
 
 export PATH=/opt/puppetlabs/bin:$PATH
-mv /home/ec2-user/HelloAfterpay/config/site.pp /etc/puppetlabs/code/environments/production/manifests/
+mv /home/ec2-user/api-application-stack/config/site.pp /etc/puppetlabs/code/environments/production/manifests/
 puppet apply --modulepath=/etc/puppetlabs/code/environments/production/modules /etc/puppetlabs/code/environments/production/manifests/site.pp
